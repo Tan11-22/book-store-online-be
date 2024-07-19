@@ -15,9 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 public interface SachRepository extends JpaRepository<Sach, String> {
+    // query thông tin sách dạng card dùng cho trang chủ , thể loại , tìm kiếm
     @Query(value = "{call SP_LAY_DS_SACH(:start, :size)}", nativeQuery = true)
     List<Sach> layDSSach(@Param("start") int start, @Param("size") int size);
 
+
+
+    // những câu query để lấy thông tin chi tiết 1 cuốn sách
     @Query(value = "{call SP_LAY_CHI_TIET_SACH(:isbn)}", nativeQuery = true)
     Map<String, Object> layChiTietSach(@Param("isbn") String isbn);
 
