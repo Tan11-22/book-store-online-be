@@ -23,12 +23,18 @@ public class SachServiceImpl implements SachService {
     @Autowired
     private SachRepository sachRepository;
 
+
+    // query thông tin sách dạng card dùng cho trang chủ , thể loại , tìm kiếm
     @Override
-    public List<Sach> layDSSach() {
-        List<Sach> sachs = sachRepository.layDSSach();
+    public List<Sach> layDSSach(int start, int size) {
+        List<Sach> sachs = sachRepository.layDSSach(start, size);
         return sachs;
     }
 
+
+
+
+    // những câu query để lấy thông tin chi tiết 1 cuốn sách
     @Override
     public BookStoreResponse<ChiTietSachDTO> layChiTietSach(String isbn) {
         ChiTietSachDTO chiTietSachDTO = taoDoiTuongChiTietSach(isbn);

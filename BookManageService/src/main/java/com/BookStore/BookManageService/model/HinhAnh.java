@@ -1,4 +1,4 @@
-package com.BookStore.BookService.model;
+package com.BookStore.BookManageService.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,23 +7,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "GIOHANG")
+@Table(name = "HINHANH")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GioHang {
+public class HinhAnh {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "IDGIOHANG")
-    private Integer idGioHang;
-
-    @Column(name="TENDANGNHAP")
-    private String tenDangNhap;
+    @Column(name = "IDANH")
+    private Integer idAnh;
 
     @Column(name = "ISBN")
     private String isbn;
 
-    @Column(name="SOLUONG")
-    private Integer soLuong;
+    @Column(name = "FILENAME")
+    private String filename;
+
 }

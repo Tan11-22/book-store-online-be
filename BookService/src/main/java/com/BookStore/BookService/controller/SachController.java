@@ -14,14 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sach-service/")
+@RequestMapping("/api/sach-service/sach/")
 public class SachController {
     @Autowired
     SachService sachService;
 
     @GetMapping("/ds-sach")
-    public ResponseEntity<List<Sach>> layDSSach() {
-        List<Sach> sachs = sachService.layDSSach();
+    public ResponseEntity<List<Sach>> layDSSach(@RequestParam("start") int start,
+                                                @RequestParam("size") int size) {
+        List<Sach> sachs = sachService.layDSSach(start, size);
         return ResponseEntity.ok(sachs);
     }
 
