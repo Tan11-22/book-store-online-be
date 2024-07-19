@@ -20,8 +20,9 @@ public class SachController {
     SachService sachService;
 
     @GetMapping("/ds-sach")
-    public ResponseEntity<List<Sach>> layDSSach() {
-        List<Sach> sachs = sachService.layDSSach();
+    public ResponseEntity<List<Sach>> layDSSach(@RequestParam("start") int start,
+                                                @RequestParam("size") int size) {
+        List<Sach> sachs = sachService.layDSSach(start, size);
         return ResponseEntity.ok(sachs);
     }
 

@@ -24,8 +24,8 @@ public class SachServiceImpl implements SachService {
     private SachRepository sachRepository;
 
     @Override
-    public List<Sach> layDSSach() {
-        List<Sach> sachs = sachRepository.layDSSach();
+    public List<Sach> layDSSach(int start, int size) {
+        List<Sach> sachs = sachRepository.layDSSach(start, size);
         return sachs;
     }
 

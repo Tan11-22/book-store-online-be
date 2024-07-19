@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface SachRepository extends JpaRepository<Sach, String> {
-    @Query(value = "{call SP_LAY_DS_SACH()}", nativeQuery = true)
-    List<Sach> layDSSach();
+    @Query(value = "{call SP_LAY_DS_SACH(:start, :size)}", nativeQuery = true)
+    List<Sach> layDSSach(@Param("start") int start, @Param("size") int size);
 
     @Query(value = "{call SP_LAY_CHI_TIET_SACH(:isbn)}", nativeQuery = true)
     Map<String, Object> layChiTietSach(@Param("isbn") String isbn);
