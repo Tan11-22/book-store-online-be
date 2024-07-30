@@ -32,7 +32,11 @@ public interface GioHangRepository extends JpaRepository<GioHang, Integer> {
     @Query(value = "{call SP_LAY_CHI_TIET_GIO_HANG(:tendangnhap)}", nativeQuery = true)
     List<Map<String,Object>> layChiTietGioHang(@Param("tendangnhap") String tenDangNhap);
 
-    @Query(value = "{call SP_LAY_ID_GIO_HAN(:tendangnhap, :isbn)}", nativeQuery = true)
-    Integer layIdGioHang(@Param("tendangnhap") String tenDangNhap,
+    @Query(value = "{call SP_LAY_ID_GIO_HANG(:tendangnhap, :isbn)}", nativeQuery = true)
+    Map<String,Object> layIdGioHang(@Param("tendangnhap") String tenDangNhap,
                          @Param("isbn") String isbn);
+
+
+    @Query(value = "{call SP_LAY_SL_SACH_GH(:tendangnhap)}", nativeQuery = true)
+    Integer laySLSachTrongGH(@Param("tendangnhap") String tenDangNhap);
 }

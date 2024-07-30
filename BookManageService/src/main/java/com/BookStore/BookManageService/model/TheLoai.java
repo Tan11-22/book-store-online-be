@@ -16,7 +16,7 @@ public class TheLoai {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IDTHELOAI")
-    private Integer idTacGia;
+    private Integer idTheLoai;
 
     @Column(name="TENTHELOAI")
     private String tenTheLoai;

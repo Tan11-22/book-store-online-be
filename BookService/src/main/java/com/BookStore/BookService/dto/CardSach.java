@@ -9,12 +9,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GioHangDTO {
-    private Integer idGioHang;
+public class CardSach {
+    private String isbn;
     private String tenSach;
-    private Integer soLuong;
+    private String tenTacGia;
     private Integer giaBan;
     private Integer giaGiam;
-    private String anh;
-    private Boolean selected;
+    private String tenAnh;
 }

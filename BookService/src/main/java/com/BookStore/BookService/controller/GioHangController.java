@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.awt.print.Book;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sach-service/gio-hang/")
@@ -20,6 +21,19 @@ public class GioHangController {
     @GetMapping("chi-tiet-gio-hang")
     public BookStoreResponse<List<GioHangDTO>> xemChiTietGioHang(@RequestParam("tendangnhap") String ten) {
         return gioHangService.layChiTietGioHang(ten);
+    }
+
+
+    @PostMapping("dat-mua-sach")
+    public String datMuaSach(
+//            @RequestParam("diaChi") String diaChi,
+//                             @RequestParam("ptth") String tenSach,
+                             @RequestParam("sachs") List<GioHangDTO> sachs) {
+        for(GioHangDTO x : sachs) {
+            System.out.println(x.toString());
+        }
+
+        return "Check api";
     }
 
     // Thêm sách
@@ -41,7 +55,14 @@ public class GioHangController {
     // Xoá sách
 
     @PostMapping("/xoa")
-    public BookStoreResponse<Boolean> xoaSachTrongGioHang(@RequestBody GioHang data) {
-        return gioHangService.xoaSachTrongGioHang(data.getIdGioHang());
+    public BookStoreResponse<Boolean> xoaSachTrongGioHang(@RequestBody Map<String, String> data) {
+        return gioHangService.xoaSachTrongGioHang(Integer.parseInt(data.get("idGioHang")));
     }
+
+    @GetMapping("so-luong")
+    public BookStoreResponse<Integer> laySlSachTrongGH(@RequestParam("tendangnhap") String ten) {
+        return gioHangService.laySLSachTrongGH(ten);
+    }
+
+
 }

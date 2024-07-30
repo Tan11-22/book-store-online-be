@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class NhaXuatBan {
     @Id
     @Column(name = "MANHAXUATBAN")
