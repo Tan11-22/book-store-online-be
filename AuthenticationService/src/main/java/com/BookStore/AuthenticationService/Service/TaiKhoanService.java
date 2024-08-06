@@ -16,4 +16,6 @@ public interface TaiKhoanService {
                                               Date ngaySinh,
                                               String soDienThoai);
     String lauQuyenCuaUser(String tenDangNhap);
+    BookStoreResponse<Boolean> thayDoiMatKhau(String username, String password, String newpassword);
+    BookStoreResponse quenMatKhau(String email, String username);
 }

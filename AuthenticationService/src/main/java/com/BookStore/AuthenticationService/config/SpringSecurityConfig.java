@@ -65,6 +65,7 @@ public class SpringSecurityConfig {
                     authorize.requestMatchers("/api/authentication-service/login",
                                     "/api/authentication-service/quen-mat-khau",
                                     "/api/authentication-service/dang-ky",
+                                    "/api/authentication-service/valid",
                                     "/actuator/health")
                             .permitAll();
                     authorize.anyRequest().authenticated();

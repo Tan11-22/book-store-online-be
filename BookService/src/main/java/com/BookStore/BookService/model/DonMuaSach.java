@@ -22,7 +22,7 @@ public class DonMuaSach {
     @Column(name="TENDANGNHAP")
     private String tenDangNhap;
     @Column(name = "NGAYMUA")
-    private Date ngayMua;
+    private String ngayMua;
     @Column(name = "TRANGTHAI")
     private Integer trangThai;
     @Column(name = "DIACHIGIAO")

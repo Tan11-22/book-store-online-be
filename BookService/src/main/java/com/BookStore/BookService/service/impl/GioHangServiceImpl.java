@@ -31,7 +31,7 @@ public class GioHangServiceImpl implements GioHangService {
 
     @Override
     @Transactional
-    public BookStoreResponse<Boolean> themSachVaoGioHang(String ten, String isbn, int soLuong) {
+    public BookStoreResponse<Boolean>   themSachVaoGioHang(String ten, String isbn, int soLuong) {
         Map<String, Object> dataGH = gioHangRepository.layIdGioHang(ten,isbn);
         Integer id = (Integer) dataGH.get("IDGIOHANG");
         System.out.println(id);
@@ -112,6 +112,7 @@ public class GioHangServiceImpl implements GioHangService {
     private GioHangDTO mapGHToDTO(Map<String, Object> data) {
         return GioHangDTO.builder()
                 .idGioHang((Integer) data.get("IDGIOHANG"))
+                .isbn((String) data.get("ISBN"))
                 .tenSach((String) data.get("TENSACH"))
                 .soLuong((Integer) data.get("SOLUONG"))
                 .giaBan((Integer) data.get("GIABAN"))

@@ -2,7 +2,9 @@ package com.BookStore.BookService.controller;
 
 import com.BookStore.BookService.dto.BookStoreResponse;
 import com.BookStore.BookService.dto.GioHangDTO;
+import com.BookStore.BookService.dto.GioHangDTORequest;
 import com.BookStore.BookService.model.GioHang;
+import com.BookStore.BookService.service.DonMuaSachService;
 import com.BookStore.BookService.service.GioHangService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,9 @@ public class GioHangController {
 
     @Autowired
     private GioHangService gioHangService;
+
+    @Autowired
+    private DonMuaSachService donMuaSachService;
     // Xem chi tiết
     @GetMapping("chi-tiet-gio-hang")
     public BookStoreResponse<List<GioHangDTO>> xemChiTietGioHang(@RequestParam("tendangnhap") String ten) {
@@ -25,15 +30,15 @@ public class GioHangController {
 
 
     @PostMapping("dat-mua-sach")
-    public String datMuaSach(
-//            @RequestParam("diaChi") String diaChi,
-//                             @RequestParam("ptth") String tenSach,
-                             @RequestParam("sachs") List<GioHangDTO> sachs) {
-        for(GioHangDTO x : sachs) {
+    public BookStoreResponse<?> datMuaSach(@RequestBody GioHangDTORequest data) {
+        for(GioHangDTO x : data.getGioHangList()) {
             System.out.println(x.toString());
         }
+        System.out.println(data.getDiaChi());
+        System.out.println(data.getHinhThucThanhToan());
+        System.out.println(data.getTenDangNhap());
 
-        return "Check api";
+        return donMuaSachService.datMuaSach(data);
     }
 
     // Thêm sách

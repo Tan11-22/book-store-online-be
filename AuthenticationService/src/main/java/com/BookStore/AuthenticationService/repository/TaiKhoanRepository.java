@@ -35,4 +35,14 @@ public interface TaiKhoanRepository extends JpaRepository<TaiKhoan, String> {
 
     @Query(value = "{call SP_LAY_QUYEN_CUA_USER(:tdn)}", nativeQuery = true)
     String layQuyenCuaTK(@Param("tdn") String tenDangNhap);
+
+    @Procedure(procedureName = "SP_DOI_MAT_KHAU")
+    void doiMatKhau(@Param("tdn") String tdn,
+                     @Param("newMK") String newMK);
+
+    @Query(value = "SELECT EMAIL FROM KHACHHANG WHERE TENDANGNHAP=:tdn", nativeQuery = true)
+    String getEmailKH(@Param("tdn") String tenDangNhap);
+
+    @Query(value = "SELECT EMAIL FROM NHANVIEN WHERE MANHANVIEN=:tdn", nativeQuery = true)
+    String getEmailNV(@Param("tdn") String tenDangNhap);
 }

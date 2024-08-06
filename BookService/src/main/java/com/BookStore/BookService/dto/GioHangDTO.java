@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class GioHangDTO {
     private Integer idGioHang;
+    private String isbn;
     private String tenSach;
     private Integer soLuong;
     private Integer giaBan;
