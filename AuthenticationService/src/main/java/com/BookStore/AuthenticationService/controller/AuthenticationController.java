@@ -2,6 +2,7 @@ package com.BookStore.AuthenticationService.controller;
 
 import com.BookStore.AuthenticationService.Service.AuthService;
 import com.BookStore.AuthenticationService.Service.KhachHangService;
+import com.BookStore.AuthenticationService.Service.NhanVienService;
 import com.BookStore.AuthenticationService.Service.TaiKhoanService;
 import com.BookStore.AuthenticationService.dto.BookStoreResponse;
 import com.BookStore.AuthenticationService.jwt.JwtTokenProvider;
@@ -30,6 +31,9 @@ public class AuthenticationController {
 
     @Autowired
     private KhachHangService khachHangService;
+
+    @Autowired
+    private NhanVienService nhanVienService;
 
     @PostMapping("login")
     public Map<String, String> testLogin(@RequestBody Map<String, String> user) {
@@ -63,6 +67,11 @@ public class AuthenticationController {
     @GetMapping("get-info")
     public BookStoreResponse<KhachHang> getInfoKhachHang(@RequestParam("tdn") String tenDangNhap) {
         return khachHangService.getInfoKhachHang(tenDangNhap);
+    }
+
+    @GetMapping("get-info-nv")
+    public BookStoreResponse<KhachHang> getInfoNhanVien(@RequestParam("tdn") String tenDangNhap) {
+        return nhanVienService.getInfoNhanVien(tenDangNhap);
     }
 
     @PostMapping("thay-doi-mat-khau")

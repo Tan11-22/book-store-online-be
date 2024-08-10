@@ -9,4 +9,6 @@ import java.util.List;
 public interface DonMuaSachService {
     BookStoreResponse<?> datMuaSach(GioHangDTORequest gioHangDTORequest);
     BookStoreResponse<List<DonMuaSachDTO>> layThongTinDatMua(String tenDangNhap);
+
+    BookStoreResponse updateTrangThaiDonMuaSauThanhToan(String tenDangNhap, int trangThai);
 }

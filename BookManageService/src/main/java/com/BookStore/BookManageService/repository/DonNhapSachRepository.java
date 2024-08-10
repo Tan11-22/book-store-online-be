@@ -24,6 +24,8 @@ public interface DonNhapSachRepository extends JpaRepository<DonNhapSach, Intege
     @Query(value = "{call SP_GET_CTDONNHAPSACH_IDDON(:id)}", nativeQuery = true)
     List<Map<String, Object>> getCTDonNhapSachTheoIdDon(@Param("id") int id);
 //
+
+
 //    @Query(value = "{call SP_LAY_ALL_NXB()}", nativeQuery = true)
 //    List<NhaXuatBan> layAllNXB();
 

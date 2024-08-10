@@ -69,4 +69,9 @@ public class SachController {
 
         return sachService.themSachMoi(isbn,tenSach,soTrang,khuonKho,trongLuong,moTa,nxb,chipTGs,chipTLs,files);
     }
+
+    @GetMapping("doanh-thu")
+    public BookStoreResponse getDoanhThuNam(@RequestParam("year") int year) {
+        return sachService.thongKeDoanhThuNam(year);
+    }
 }

@@ -21,4 +21,9 @@ public class PhieuNhapController {
     public BookStoreResponse getAllPN() {
         return phieuNhapService.getAllPhieuNhap();
     }
+
+    @GetMapping("chi-tiet-phieu-nhap")
+    public BookStoreResponse getCtPhieuNhap(@RequestParam("spn") int soPhieuNhap) {
+        return phieuNhapService.getCTPN(soPhieuNhap);
+    }
 }

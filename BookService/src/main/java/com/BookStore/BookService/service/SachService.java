@@ -13,4 +13,7 @@ public interface SachService {
     BookStoreResponse<ChiTietSachDTO> layChiTietSach(String isbn);
 
     BookStoreResponse<List<CardSach>> timSach(String search, int start, int size);
+    BookStoreResponse demSLSachTimRa(String search);
+
+    BookStoreResponse layDSSachBanChay(int start, int size);
 }

@@ -24,6 +24,12 @@ public class SachController {
        return sachService.layDSSach(start, size);
     }
 
+    @GetMapping("ds-sach-ban-chay")
+    public BookStoreResponse<List<CardSach>> layDSSachBanChay(@RequestParam("start") int start,
+                                                       @RequestParam("size") int size) {
+        return sachService.layDSSachBanChay(start, size);
+    }
+
 
     @GetMapping("chi-tiet-sach")
     public BookStoreResponse<ChiTietSachDTO> layCTSach(@RequestParam("isbn") String isbn) {
@@ -36,5 +42,10 @@ public class SachController {
                                                        @RequestParam("start") int start,
                                                        @RequestParam("size") int size) {
         return sachService.timSach(search, start, size);
+    }
+
+    @GetMapping("tong-sl-sach-tim")
+    public BookStoreResponse<Integer> layTongSLSachTim(@RequestParam("search") String search) {
+        return sachService.demSLSachTimRa(search);
     }
 }

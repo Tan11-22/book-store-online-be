@@ -34,4 +34,6 @@ public interface PhieuNhapRepository extends JpaRepository<PhieuNhap,Integer> {
 //
 //    @Query(value = "{call SP_GET_ALL_PHIEU_NHAP()}",nativeQuery = true)
 //    List<Map<String,Object>> getAllPN();
+    @Query(value = "{call SP_GET_CTPN_SPN(:spn)}", nativeQuery = true)
+    List<Map<String, Object>> getCTPhieuNhapTheoSPN(@Param("spn") int soPhieuNhap);
 }

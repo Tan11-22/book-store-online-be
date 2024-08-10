@@ -1,8 +1,6 @@
 package com.BookStore.BookManageService.service.impl;
 
-import com.BookStore.BookManageService.dto.BookStoreResponse;
-import com.BookStore.BookManageService.dto.DonNhapSachRequestDTO;
-import com.BookStore.BookManageService.dto.SachDNDTO;
+import com.BookStore.BookManageService.dto.*;
 import com.BookStore.BookManageService.model.CTDonNhapSach;
 import com.BookStore.BookManageService.model.DonNhapSach;
 import com.BookStore.BookManageService.model.PhieuNhap;
@@ -15,6 +13,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PhieuNhapServiceImpl  implements PhieuNhapService {
@@ -56,5 +55,29 @@ public class PhieuNhapServiceImpl  implements PhieuNhapService {
                 .code(200)
                 .status("Lấy danh sach phiếu nhập thành công!")
                 .data(result).build();
+    }
+
+    @Override
+    public BookStoreResponse getCTPN(int soPhieuNhap) {
+        PhieuNhap data = phieuNhapRepository.findById(soPhieuNhap).orElse(null);
+        System.out.println(data);
+        List<Map<String, Object>> dataSach = phieuNhapRepository.getCTPhieuNhapTheoSPN(soPhieuNhap);
+        List<SachDNDTO> sachs = dataSach.stream().map(map->mapSachtoDTO(map)).toList();
+        CTPNDTO result = CTPNDTO.builder().phieuNhap(data).sachs(sachs).build();
+        return BookStoreResponse.<CTPNDTO>builder()
+                .code(200)
+                .status("Lấy chi tiết phiếu nhập thành công!")
+                .data(result).build();
+    }
+
+    private SachDNDTO mapSachtoDTO(Map<String, Object> data) {
+        int soLuong = data.get("SOLUONG")!=null ? (Integer) data.get("SOLUONG") : 1;
+        return SachDNDTO.builder()
+                .isbn((String) data.get("ISBN"))
+                .tenSach((String) data.get("TENSACH"))
+                .giaNhap((Integer) data.get("GIANHAP"))
+                .tenAnh((String) data.get("TENANH"))
+                .soLuong(soLuong)
+                .build();
     }
 }

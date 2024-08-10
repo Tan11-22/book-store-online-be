@@ -42,11 +42,14 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "authentication-service/dang-ky",
             "authentication-service/quen-mat-khau",
             "quan-ly-sach-service/hinh-anh/get",
+            "quan-ly-sach-service/hinh-anh/getUser",
             "sach-service/hinh-anh/get",
             "sach-service/hinh-anh/getUser",
             "sach-service/sach/ds-sach",
             "sach-service/sach/chi-tiet-sach",
-            "sach-service/sach/tim-sach"
+            "sach-service/sach/tim-sach",
+            "sach-service/sach/ds-sach-ban-chay"
+
     };
 
     private String apiPrefix = "/api/";

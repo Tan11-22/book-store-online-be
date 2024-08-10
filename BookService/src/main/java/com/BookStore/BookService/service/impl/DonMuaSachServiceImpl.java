@@ -43,7 +43,7 @@ public class DonMuaSachServiceImpl implements DonMuaSachService {
         // thực hiện insert donmua nếu thanh toán trực tiếp
             try {
                 donMuaSachRepository.themDonMuaSach(gioHangDTORequest.getTenDangNhap(),
-                        gioHangDTORequest.getHinhThucThanhToan()==0?1:2, // trạng thái = 1: chưa thanh toán,2: đã thanh toán.
+                        gioHangDTORequest.getHinhThucThanhToan()==0?1:0, // trạng thái = 1: chưa thanh toán,0: chờ thanh toán.
                         gioHangDTORequest.getDiaChi() );
                 for(GioHangDTO x : gioHangDTORequest.getGioHangList()) {
                     donMuaSachRepository.themSachVaoCTDonMua(
@@ -52,9 +52,11 @@ public class DonMuaSachServiceImpl implements DonMuaSachService {
                             x.getSoLuong(),
                             x.getGiaGiam() != null ? x.getGiaGiam():x.getGiaBan()
                             );
-                    gioHangRepository.xoaSachTrongGioHang(x.getIdGioHang());
-                    int soLuongSachTrongKho = donMuaSachRepository.getSoLuongSach(x.getIsbn());
-                    donMuaSachRepository.updateSoLuongSach(x.getIsbn(),soLuongSachTrongKho-x.getSoLuong());
+                    if (gioHangDTORequest.getHinhThucThanhToan()==0) {
+                        gioHangRepository.xoaSachTrongGioHang(x.getIdGioHang());
+                        int soLuongSachTrongKho = donMuaSachRepository.getSoLuongSach(x.getIsbn());
+                        donMuaSachRepository.updateSoLuongSach(x.getIsbn(),soLuongSachTrongKho-x.getSoLuong());
+                    }
                 }
                 return BookStoreResponse.<Boolean>builder()
                         .code(200)
@@ -83,6 +85,55 @@ public class DonMuaSachServiceImpl implements DonMuaSachService {
                 .code(200)
                 .status("Lấy danh sách đơn mua sách thành công!")
                 .data(result).build();
+    }
+
+    @Override
+    @Transactional
+    public BookStoreResponse updateTrangThaiDonMuaSauThanhToan(String tenDangNhap, int trangThai) {
+        int idDonMua = donMuaSachRepository.getIdDonMuaSach(tenDangNhap);
+        if(trangThai == 1) { // trường hợp thanh toán thành công
+            try {
+                donMuaSachRepository.updateTrangThaiDonMua(idDonMua,2);
+                List<Map<String, Object>> listISBNSachMua = donMuaSachRepository.getISBNbyIdDon(idDonMua);
+                for(Map<String, Object> x: listISBNSachMua) {
+                    donMuaSachRepository.xoaSachTrongGioHang(tenDangNhap,(String) x.get("ISBN"));
+                    int soLuongSachTrongKho = donMuaSachRepository.getSoLuongSach((String) x.get("ISBN"));
+                    donMuaSachRepository.updateSoLuongSach((String) x.get("ISBN"),soLuongSachTrongKho-((Integer)x.get("SOLUONG")));
+                }
+                return BookStoreResponse.<Boolean>builder()
+                        .code(200)
+                        .status("Cập nhật trạng thái thành công! ")
+                        .data(true)
+                        .build();
+            } catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                System.out.println("ERROR-62: Xoá sach trong gio hang--- " + e.getMessage());
+                return BookStoreResponse.<Boolean>builder()
+                        .code(202)
+                        .status("Đặt mua thất bại! " + e.getMessage())
+                        .data(false)
+                        .build();
+            }
+        }
+        else { // trường hơp thanh toán that bại
+            try {
+                donMuaSachRepository.xoaCTDonMuaSach(idDonMua);
+                donMuaSachRepository.xoaDonMuaSach(idDonMua);
+                return BookStoreResponse.<Boolean>builder()
+                        .code(201)
+                        .status("Huỷ đơn thành công! ")
+                        .data(true)
+                        .build();
+            } catch (Exception e) {
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                System.out.println("ERROR-62: Xoá sach trong gio hang--- " + e.getMessage());
+                return BookStoreResponse.<Boolean>builder()
+                        .code(202)
+                        .status("Đặt mua thất bại! " + e.getMessage())
+                        .data(false)
+                        .build();
+            }
+        }
     }
 
     private DonMuaSachDTO mapDMStoDTO(DonMuaSach data) {

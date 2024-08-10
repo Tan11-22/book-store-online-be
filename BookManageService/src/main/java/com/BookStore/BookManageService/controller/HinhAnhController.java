@@ -33,4 +33,13 @@ public class HinhAnhController {
                 .contentType(contentType)
                 .body(fileService.openFile(name,0));
     }
+
+
+    @GetMapping(value = "getUser")
+    public ResponseEntity<InputStreamResource> getImageDynamicTypeUser(@RequestParam("name") String name) {
+        MediaType contentType = MediaType.IMAGE_PNG;
+        return ResponseEntity.ok()
+                .contentType(contentType)
+                .body(fileService.openFile(name,1));
+    }
 }

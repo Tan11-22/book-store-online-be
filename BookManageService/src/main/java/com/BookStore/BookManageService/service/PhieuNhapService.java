@@ -6,4 +6,5 @@ import com.BookStore.BookManageService.dto.DonNhapSachRequestDTO;
 public interface PhieuNhapService {
     BookStoreResponse<Boolean> taoPhieuNhap(DonNhapSachRequestDTO donNhapSachRequestDTO);
     BookStoreResponse getAllPhieuNhap();
+    BookStoreResponse getCTPN(int soPhieuNhap);
 }

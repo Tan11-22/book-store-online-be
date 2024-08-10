@@ -55,4 +55,9 @@ public interface SachRepository extends JpaRepository<Sach, String> {
 
     @Query(value = "{call sp_Check_ISBN(:isbn)}", nativeQuery = true)
     Integer checkISBN(@Param("isbn") String isbn);
+
+    @Query(value = "{call GetMonthlyRevenue(:year)}", nativeQuery = true)
+    List<Map<String, Object>> thongKeDoanhThuNam(@Param("year") int year);
+
+
 }

@@ -20,8 +20,14 @@ public interface SachRepository extends JpaRepository<Sach, String> {
     List<Map<String, Object>> layDSSach(@Param("start") int start, @Param("size") int size);
 
 
+    @Query(value = "{call SP_LAY_DS_SACH_BAN_CHAY(:start, :size)}", nativeQuery = true)
+    List<Map<String, Object>> layDSSachBanChay(@Param("start") int start, @Param("size") int size);
+
     @Query(value = "{call SP_TIM_SACH(:search, :start, :size)}", nativeQuery = true)
     List<Map<String, Object>> timSach(@Param("search") String search, @Param("start") int start, @Param("size") int size);
+
+    @Query(value = "{call SP_COUNT_TIM_SACH(:search)}", nativeQuery = true)
+    int demSachTimRa(@Param("search") String search);
 
 
     // những câu query để lấy thông tin chi tiết 1 cuốn sách
@@ -39,5 +45,7 @@ public interface SachRepository extends JpaRepository<Sach, String> {
 
     @Query(value = "{call SP_LAY_DS_BINH_LUAN_CUA_SACH(:isbn)}", nativeQuery = true)
     List<Map<String, Object>> layDanhSachBinhLuanCuaSach(@Param("isbn") String isbn);
+
+
 
 }

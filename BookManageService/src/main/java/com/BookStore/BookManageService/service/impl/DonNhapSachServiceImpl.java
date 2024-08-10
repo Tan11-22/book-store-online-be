@@ -155,6 +155,7 @@ public class DonNhapSachServiceImpl implements DonNhapSachService {
                 .maNhanVien((String) data.get("MANHANVIEN"))
                 .ngayDat((Date) data.get("NGAYDAT"))
                 .tenNhaXuatBan((String) data.get("TENNHAXUATBAN"))
+                .daNhap((Integer) data.get("DANHAP"))
                 .build();
     }
 

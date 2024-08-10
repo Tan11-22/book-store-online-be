@@ -52,4 +52,24 @@ public interface DonMuaSachRepository extends JpaRepository<DonMuaSach, Integer>
 
     @Query(value = "SELECT SOLUONG FROM SACH WHERE ISBN=:isbn",nativeQuery = true)
     int getSoLuongSach(@Param("isbn") String isbn);
+
+
+    @Query(value = "{call SP_DON_MUA_SACH_MOI_NHAT(:tdn)}",nativeQuery = true)
+    int getIdDonMuaSach(@Param("tdn") String tenDangNhap);
+
+
+    @Procedure(procedureName = "SP_CAP_NHAT_TRANG_THAI_DON_MUA")
+    void updateTrangThaiDonMua(
+            @Param("idDonMua") int idDon,
+            @Param("tt") int trangThai);
+
+
+    @Query(value = "{call SP_GET_ISBN_BY_ID_DM(:idDonMua)}",nativeQuery = true)
+    List<Map<String, Object>> getISBNbyIdDon(@Param("idDonMua") int idDonMua);
+
+
+    @Procedure(procedureName = "SP_XOA_SACH_GIO_HANG")
+    void xoaSachTrongGioHang(
+            @Param("tdn") String tenDangNhap,
+            @Param("isbn") String isbn);
 }

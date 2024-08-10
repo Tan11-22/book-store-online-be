@@ -72,6 +72,24 @@ public class SachServiceImpl implements SachService {
                 .data(result).build();
     }
 
+    @Override
+    public BookStoreResponse demSLSachTimRa(String search) {
+        return BookStoreResponse.<Integer>builder()
+                .code(200)
+                .status("Lấy tổng số lượng thành công!")
+                .data(sachRepository.demSachTimRa(search)).build();
+    }
+
+    @Override
+    public BookStoreResponse layDSSachBanChay(int start, int size) {
+        List<Map<String, Object>> data = sachRepository.layDSSachBanChay(start, size);
+        List<CardSach> result = data.stream().map(map -> mapSachToCard(map)).toList();
+        return BookStoreResponse.<List<CardSach>>builder()
+                .code(200)
+                .status("Lấy danh sách card sách thành công!")
+                .data(result).build();
+    }
+
     private ChiTietSachDTO taoDoiTuongChiTietSach(String isbn) {
         SachDTO sachDTO = mapToDTO(sachRepository.layChiTietSach(isbn));
         List<HinhAnh> hinhAnhs = mapObToHA(isbn);

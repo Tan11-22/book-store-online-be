@@ -1,8 +1,6 @@
 package com.BookStore.BookManageService.service.impl;
 
-import com.BookStore.BookManageService.dto.BookStoreResponse;
-import com.BookStore.BookManageService.dto.SachDTO;
-import com.BookStore.BookManageService.dto.TacGiaDTO;
+import com.BookStore.BookManageService.dto.*;
 import com.BookStore.BookManageService.model.HinhAnh;
 import com.BookStore.BookManageService.model.NhaXuatBan;
 import com.BookStore.BookManageService.model.TacGia;
@@ -16,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -116,6 +115,48 @@ public class SachServiceImpl implements SachService {
                 .data(result)
                 .build();
     }
+
+    @Override
+    public BookStoreResponse thongKeDoanhThuNam(int year) {
+        List<DoanhThuDTO> doanhThuDTOS = new ArrayList<>();
+        for(int i=0; i <12; i++) {
+            DoanhThuDTO doanhThuDTO = DoanhThuDTO.builder()
+                    .thang(i+1)
+                    .nam(year)
+                    .thanhTienBan(0L)
+                    .thanhTienNhap(0L)
+                    .tongSoSachBan(0L)
+                    .tongSoSachNhap(0L)
+                    .build();
+            doanhThuDTOS.add(doanhThuDTO);
+        }
+        List<Map<String, Object>> dataQuery = sachRepository.thongKeDoanhThuNam(year);
+        for(Map<String, Object> data : dataQuery) {
+            int thang = (Integer) data.get("THANG");
+            int nam = (Integer) data.get("NAM");
+            long tongSo = (Long) data.get("TONGSO");
+            long thanhTien = (Long) data.get("THANHTIEN");
+            int kieu = (Integer) data.get("KIEU");
+            if(kieu == 1) {
+                long tienTMP =  doanhThuDTOS.get(thang-1).getThanhTienBan();
+                long sachTMP =  doanhThuDTOS.get(thang-1).getTongSoSachBan();
+                doanhThuDTOS.get(thang-1).setThanhTienBan(tienTMP+thanhTien);
+                doanhThuDTOS.get(thang-1).setTongSoSachBan(sachTMP+tongSo);
+            } else {
+                long tienTMP =  doanhThuDTOS.get(thang-1).getThanhTienNhap();
+                long sachTMP =  doanhThuDTOS.get(thang-1).getTongSoSachNhap();
+                doanhThuDTOS.get(thang-1).setThanhTienNhap(tienTMP+thanhTien);
+                doanhThuDTOS.get(thang-1).setTongSoSachNhap(sachTMP+tongSo);
+            }
+        }
+        return BookStoreResponse.<List<DoanhThuDTO>>builder()
+                .code(200)
+                .status("Lấy doanh thu thành công!")
+                .data(doanhThuDTOS).build();
+    }
+
+
+
 
     private SachDTO mapDataToDTO(Map<String, Object> data) {
         List<TacGia> tacGias = sachRepository.layDSTGQT((String) data.get("ISBN")).stream().map(map->mapDataToTG(map)).toList();

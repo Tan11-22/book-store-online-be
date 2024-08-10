@@ -21,4 +21,5 @@ public class DonNhapSachDTO {
     private String maNhanVien;
     private Date ngayDat;
     private String tenNhaXuatBan;
+    private Integer daNhap;
 }

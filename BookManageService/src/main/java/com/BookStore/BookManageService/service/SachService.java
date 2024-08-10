@@ -5,7 +5,6 @@ import com.BookStore.BookManageService.dto.SachDTO;
 import com.BookStore.BookManageService.model.NhaXuatBan;
 import com.BookStore.BookManageService.model.TacGia;
 import com.BookStore.BookManageService.model.TheLoai;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -25,4 +24,7 @@ public interface SachService {
     BookStoreResponse<List<TacGia>> layTCTG();
     BookStoreResponse<List<TheLoai>> layTCTL();
     BookStoreResponse<List<NhaXuatBan>> layTCNXB();
+    BookStoreResponse thongKeDoanhThuNam(int year);
+
+
 }
