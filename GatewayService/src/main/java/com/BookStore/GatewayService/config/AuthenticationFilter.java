@@ -48,6 +48,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "sach-service/sach/ds-sach",
             "sach-service/sach/chi-tiet-sach",
             "sach-service/sach/tim-sach",
+            "sach-service/sach/tong-sl-sach-tim",
             "sach-service/sach/ds-sach-ban-chay"
 
     };
