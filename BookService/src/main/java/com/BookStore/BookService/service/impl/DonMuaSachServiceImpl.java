@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +47,9 @@ public class DonMuaSachServiceImpl implements DonMuaSachService {
             try {
                 donMuaSachRepository.themDonMuaSach(gioHangDTORequest.getTenDangNhap(),
                         gioHangDTORequest.getHinhThucThanhToan()==0?1:0, // trạng thái = 1: chưa thanh toán,0: chờ thanh toán.
-                        gioHangDTORequest.getDiaChi() );
+                        gioHangDTORequest.getDiaChi()
+                    , gioHangDTORequest.getPhiVanChuyen()
+                , gioHangDTORequest.getSoDienThoai());
                 for(GioHangDTO x : gioHangDTORequest.getGioHangList()) {
                     donMuaSachRepository.themSachVaoCTDonMua(
                             x.getIsbn(),
@@ -81,6 +86,7 @@ public class DonMuaSachServiceImpl implements DonMuaSachService {
     public BookStoreResponse<List<DonMuaSachDTO>> layThongTinDatMua(String tenDangNhap) {
         List<DonMuaSach> data = donMuaSachRepository.layDonMuaHang(tenDangNhap);
         List<DonMuaSachDTO> result = data.stream().map(map->mapDMStoDTO(map)).toList();
+
         return BookStoreResponse.<List<DonMuaSachDTO>>builder()
                 .code(200)
                 .status("Lấy danh sách đơn mua sách thành công!")
@@ -91,6 +97,7 @@ public class DonMuaSachServiceImpl implements DonMuaSachService {
     @Transactional
     public BookStoreResponse updateTrangThaiDonMuaSauThanhToan(String tenDangNhap, int trangThai) {
         int idDonMua = donMuaSachRepository.getIdDonMuaSach(tenDangNhap);
+//        System.out.println(trangThai);
         if(trangThai == 1) { // trường hợp thanh toán thành công
             try {
                 donMuaSachRepository.updateTrangThaiDonMua(idDonMua,2);
@@ -136,14 +143,45 @@ public class DonMuaSachServiceImpl implements DonMuaSachService {
         }
     }
 
+    @Override
+    @Transactional
+    public BookStoreResponse huyDonMuaSach(Map<String, Object> data) {
+        int idDon = (Integer) data.get("idDon");
+        try {
+            donMuaSachRepository.updateHuyDonMua(idDon);
+            List<Map<String, Object>> listISBNSachMua = donMuaSachRepository.getISBNbyIdDon(idDon);
+            for(Map<String, Object> x: listISBNSachMua) {
+                int soLuongSachTrongKho = donMuaSachRepository.getSoLuongSach((String) x.get("ISBN"));
+                donMuaSachRepository.updateSoLuongSach((String) x.get("ISBN"),soLuongSachTrongKho+((Integer)x.get("SOLUONG")));
+            }
+            return BookStoreResponse.<Boolean>builder()
+                    .code(200)
+                    .status("Hoàn tác sách , huỷ đơn mua thành công.")
+                    .data(true)
+                    .build();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            System.out.println("ERROR-62: Xoá sach trong gio hang--- " + e.getMessage());
+            return BookStoreResponse.<Boolean>builder()
+                    .code(202)
+                    .status("Huỷ đơn mua thất bại! " + e.getMessage())
+                    .data(false)
+                    .build();
+        }
+    }
+
     private DonMuaSachDTO mapDMStoDTO(DonMuaSach data) {
         List<Map<String, Object>> dataCTDon = donMuaSachRepository.layChiTietDonMuaHang(data.getIdDonMuaSach());
         List<CTDonMuaSachDTO> sachs = dataCTDon.stream().map(map->mapCTDMSToDTO(map)).toList();
+        boolean kiemTra = (data.getTrangThai1()==1)? true : false;
         return DonMuaSachDTO.builder()
                 .donMuaSach(data)
                 .sachs(sachs)
+                .choPhepHuy(kiemTra)
                 .build();
     }
+
+
     private CTDonMuaSachDTO mapCTDMSToDTO(Map<String, Object> data) {
         return CTDonMuaSachDTO.builder()
                 .idCTDonMuaSach((Integer) data.get("IDCTDONMUASACH"))

@@ -24,6 +24,8 @@ public class SachDTO {
     private Integer trongLuong;
     private String moTa;
     private Integer soLuong;
+    private Integer soLuongNhap;
+    private Integer soLuongBan;
     private String maNhaXuatBan;
     private String tenNhaXuatBan;
     private List<TacGia> tacGias;

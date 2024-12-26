@@ -15,8 +15,8 @@ public class DonNhapSachController {
     private DonNhapSachService donNhapSachService;
 
     @GetMapping("ds")
-    public BookStoreResponse<List<DonNhapSachDTO>> layAllDNS() {
-        return  donNhapSachService.layALLDonNhapSach();
+    public BookStoreResponse<List<DonNhapSachDTO>> layAllDNS(@RequestParam("keyword") String keyword) {
+        return  donNhapSachService.layALLDonNhapSach(keyword);
     }
 
     @GetMapping("ds-nxb")
@@ -39,10 +39,15 @@ public class DonNhapSachController {
     public  BookStoreResponse<Boolean> huyDatSach(@RequestParam("idDonNhap") int idDonNhap) {
         return donNhapSachService.huyDonNhapSach(idDonNhap);
     }
-
+    //  dùng cho khi tạo phiếu nhập
     @GetMapping("chi-tiet-don-nhap-sach")
     public BookStoreResponse<DonNhapSachResponseDTO> getChiTietDon(@RequestParam("idDonNhap") int idDonNhap) {
         return donNhapSachService.getChiTietDonTheoID(idDonNhap);
+    }
+    // dùng khi xem chi tiết
+    @GetMapping("ct-don-nhap-sach")
+    public BookStoreResponse<DonNhapSachResponseDTO> layChiTietDon(@RequestParam("idDonNhap") int idDonNhap) {
+        return donNhapSachService.layChiTietDonTheoID(idDonNhap);
     }
 
 }

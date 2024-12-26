@@ -22,4 +22,5 @@ public class DonNhapSachDTO {
     private Date ngayDat;
     private String tenNhaXuatBan;
     private Integer daNhap;
+    private Integer phaiNhap;
 }

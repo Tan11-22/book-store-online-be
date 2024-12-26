@@ -25,7 +25,7 @@ public class PaymentController {
         long amount = data.getAmount()*100;
 //        String bankCode = req.getParameter("bankCode");
 
-        String vnp_TxnRef = VNPayConfig.getRandomNumber(8) + " của "+ data.getTenDangNhap();
+        String vnp_TxnRef = VNPayConfig.getRandomNumber(8) + " cua "+ data.getHoTen();
         String vnp_IpAddr = "127.0.0.1";
 
         String vnp_TmnCode = VNPayConfig.vnp_TmnCode;

@@ -3,6 +3,8 @@ package com.BookStore.AuthenticationService.jwt;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,7 +12,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.Key;
+import java.security.KeyFactory;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.RSAPublicKeySpec;
 import java.util.Date;
 
 @Component
@@ -43,6 +53,19 @@ public class JwtTokenProvider {
         return token;
     }
 
+    public String generateToken1(String username , String role) {
+        Date currentDate = new Date();
+        Date expireDate = new Date(currentDate.getTime() + jwtExpirationDate);
+        String token = Jwts.builder()
+                .setSubject(username)
+                .claim("role", role)
+                .setIssuedAt(new Date())
+                .setExpiration(expireDate)
+                .signWith(key())
+                .compact();
+        return token;
+    }
+
     private Key key() {
         return Keys.hmacShaKeyFor(
                 Decoders.BASE64.decode(jwtSecret));
@@ -57,6 +80,9 @@ public class JwtTokenProvider {
         String username = claims.getSubject();
         return username;
     }
+
+
+
 
     public boolean validateToken(String token) {
         try {
@@ -76,5 +102,4 @@ public class JwtTokenProvider {
         }
         return false;
     }
-
 }

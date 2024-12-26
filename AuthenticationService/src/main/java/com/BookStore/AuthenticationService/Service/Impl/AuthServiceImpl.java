@@ -29,7 +29,9 @@ public class AuthServiceImpl implements AuthService {
     public String login(String tenDangNhap, String matKhau) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(tenDangNhap, matKhau));
+        System.out.println("aaaaaaaabc");
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println(authentication.getPrincipal());
         String token = jwtTokenProvider.generateToken(authentication);
         return token;
     }

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.management.ObjectName;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,13 +20,17 @@ public class GioHangServiceImpl implements GioHangService {
     private GioHangRepository gioHangRepository;
 
     @Override
-    public BookStoreResponse<List<GioHangDTO>> layChiTietGioHang(String tenDangNhap) {
+    public BookStoreResponse<Map<String, Object>> layChiTietGioHang(String tenDangNhap) {
         List<Map<String, Object>> data = gioHangRepository.layChiTietGioHang(tenDangNhap);
         List<GioHangDTO> result = data.stream().map(map -> mapGHToDTO(map)).toList();
-        return BookStoreResponse.<List<GioHangDTO>>builder()
+        String sdt = gioHangRepository.getSoDienThoai(tenDangNhap);
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("sachs", result);
+        dataMap.put("sdt", sdt);
+        return BookStoreResponse.<Map<String, Object>>builder()
                 .code(200)
                 .status("Lấy chi tiết giỏ hàng thành công!")
-                .data(result)
+                .data(dataMap)
                 .build();
     }
 
@@ -118,6 +123,8 @@ public class GioHangServiceImpl implements GioHangService {
                 .giaBan((Integer) data.get("GIABAN"))
                 .giaGiam((Integer) data.get("GIAGIAM"))
                 .anh((String) data.get("TENANH"))
+                .soTrang((Integer) data.get("SOTRANG"))
+                .trongLuong((Integer) data.get("TRONGLUONG"))
                 .selected(false)
                 .build();
     }

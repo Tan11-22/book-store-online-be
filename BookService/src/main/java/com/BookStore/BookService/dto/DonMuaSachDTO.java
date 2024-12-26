@@ -15,4 +15,5 @@ import java.util.List;
 public class DonMuaSachDTO {
     private DonMuaSach donMuaSach;
     private List<CTDonMuaSachDTO> sachs;
+    private boolean choPhepHuy;
 }

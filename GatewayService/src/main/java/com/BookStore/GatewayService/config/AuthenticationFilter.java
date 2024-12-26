@@ -3,6 +3,8 @@ package com.BookStore.GatewayService.config;
 
 import com.BookStore.GatewayService.Service.LoginService;
 import com.BookStore.GatewayService.dto.LoginRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -32,12 +34,16 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PACKAGE, makeFinal = true)
 public class AuthenticationFilter implements GlobalFilter, Ordered {
-
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationFilter.class);
     private LoginService loginService;
 
     @NonFinal
     private String[] publicEndpoints = {
             "authentication-service/login",
+            "authentication-service/login-google",
+            "authentication-service/login-google-callback",
+
+//            "/oauth2/**",
             "authentication-service/valid",
             "authentication-service/dang-ky",
             "authentication-service/quen-mat-khau",
@@ -49,7 +55,14 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "sach-service/sach/chi-tiet-sach",
             "sach-service/sach/tim-sach",
             "sach-service/sach/tong-sl-sach-tim",
-            "sach-service/sach/ds-sach-ban-chay"
+            "sach-service/sach/ds-sach-ban-chay",
+            "sach-service/binh-luan/ds-binh-luan",
+            "sach-service/binh-luan/so-luong-binh-luan",
+            "sach-service/sach/sach-tuong-tu",
+            "sach-service/sach/search",
+            "sach-service/sach/search-amount",
+            "sach-service/sach/ds-tg",
+            "sach-service/sach/ds-tl"
 
     };
 
@@ -62,7 +75,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        System.out.println("check filter api gateway");
+//        System.out.println("check filter api gateway");
         // Bỏ qua những api public
         if (isPublicEndpoint(exchange.getRequest()))
             return chain.filter(exchange);
@@ -70,6 +83,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         // lấy token từ header
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
         if (CollectionUtils.isEmpty(authHeader)) {
+            logger.error("Authorization header is empty");
             return unauthenticated(exchange.getResponse());
         }
         String token = authHeader.get(0).replace("Bearer ", "");
@@ -77,6 +91,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         // call service thông qua webclient để xác thực token và trả kết quả
         return loginService.validToken(new LoginRequest(token)).flatMap(result -> {
             if (result.isValid()) {
+                logger.info("Login successful");
                 return chain.filter(exchange);
             } else {
                 return unauthenticated(exchange.getResponse());
@@ -85,8 +100,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     private boolean isPublicEndpoint(ServerHttpRequest request) {
+        String path = request.getURI().getPath();
+        logger.info("request path: "+path);
         return Arrays.stream(publicEndpoints)
-                .anyMatch(s -> request.getURI().getPath().matches(apiPrefix + s));
+                .anyMatch(s -> path.matches(apiPrefix + s))
+                || path.matches("/actuator/health")
+                || path.matches("/oauth2/.*");
     }
 
     Mono<Void> unauthenticated(ServerHttpResponse response) {

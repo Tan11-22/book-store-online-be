@@ -36,4 +36,11 @@ public interface PhieuNhapRepository extends JpaRepository<PhieuNhap,Integer> {
 //    List<Map<String,Object>> getAllPN();
     @Query(value = "{call SP_GET_CTPN_SPN(:spn)}", nativeQuery = true)
     List<Map<String, Object>> getCTPhieuNhapTheoSPN(@Param("spn") int soPhieuNhap);
+
+    @Query(value = "{call SP_GET_PN_THEO_DON_NHAP(:id)}", nativeQuery = true)
+    List<Map<String, Object>> getPhieuNhapTheoidDon(@Param("id") int idDon);
+
+    @Query(value = "{call SP_GET_PN_THEO_SPN(:spn)}", nativeQuery = true)
+    Map<String, Object> getPhieuNhapTheoSPN(@Param("spn") int soPhieuNhap);
+
 }

@@ -15,4 +15,5 @@ public class SachDNDTO {
     private Integer giaNhap;
     private String tenAnh;
     private Integer soLuong;
+    private Integer soLuongNhap;
 }

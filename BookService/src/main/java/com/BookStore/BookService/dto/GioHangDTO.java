@@ -16,6 +16,8 @@ public class GioHangDTO {
     private Integer soLuong;
     private Integer giaBan;
     private Integer giaGiam;
+    private Integer soTrang;
+    private Integer trongLuong;
     private String anh;
     private Boolean selected;
 }

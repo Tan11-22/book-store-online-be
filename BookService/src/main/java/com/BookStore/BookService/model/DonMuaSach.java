@@ -23,9 +23,20 @@ public class DonMuaSach {
     private String tenDangNhap;
     @Column(name = "NGAYMUA")
     private String ngayMua;
-    @Column(name = "TRANGTHAI")
+    @Column(name = "TRANGTHAITHANHTOAN")
     private Integer trangThai;
+    @Column(name = "NGAYTHANHTOAN")
+    private String ngayThanhToan;
     @Column(name = "DIACHIGIAO")
     private String diaChiGiao;
-
+    @Column(name = "PHIVANCHUYEN")
+    private Integer phiVanChuyen;
+    @Column(name = "SDTNGUOINHAN")
+    private String sdtNguoiNhan;
+    @Column(name = "MANVDUYET")
+    private String manvDuyet;
+    @Column(name = "MANVGIAO")
+    private String manvGiao;
+    @Column(name = "TRANGTHAIDONHANG")
+    private Integer trangThai1;
 }

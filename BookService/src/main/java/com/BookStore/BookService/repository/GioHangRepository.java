@@ -39,4 +39,7 @@ public interface GioHangRepository extends JpaRepository<GioHang, Integer> {
 
     @Query(value = "{call SP_LAY_SL_SACH_GH(:tendangnhap)}", nativeQuery = true)
     Integer laySLSachTrongGH(@Param("tendangnhap") String tenDangNhap);
+
+    @Query(value = "SELECT SODIENTHOAI FROM KHACHHANG WHERE TENDANGNHAP=:tdn", nativeQuery = true)
+    String getSoDienThoai(@Param("tdn") String tdn);
 }

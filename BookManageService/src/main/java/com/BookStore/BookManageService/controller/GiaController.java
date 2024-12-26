@@ -30,4 +30,10 @@ public class GiaController {
     public BookStoreResponse<Boolean> themGia(@RequestBody CTGiaSach data) {
         return giaService.themGiaMoi(data);
     }
+
+    @PostMapping("cap-nhat-gia")
+    public BookStoreResponse<Boolean> capNhatGia(@RequestBody CTGiaSach data) {
+        System.out.println(data.toString());
+        return giaService.capNhatGia(data);
+    }
 }

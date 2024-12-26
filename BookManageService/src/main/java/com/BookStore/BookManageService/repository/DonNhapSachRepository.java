@@ -18,18 +18,25 @@ public interface DonNhapSachRepository extends JpaRepository<DonNhapSach, Intege
     @Query(value = "{call sp_GetAllDonNhapSach()}", nativeQuery = true)
     List<Map<String, Object>> layAllDonNhapSach();
 
+    @Query(value = "{call SP_GET_ALL_DNS_TK(:keyword)}", nativeQuery = true)
+    List<Map<String, Object>> layAllDNSTK(@Param("keyword") String keyword);
+
     @Query(value = "{call SP_GET_DONNHAPSACH_ID(:id)}", nativeQuery = true)
     Map<String, Object> getDonNhapSachTheoId(@Param("id") int id);
 
+
+
     @Query(value = "{call SP_GET_CTDONNHAPSACH_IDDON(:id)}", nativeQuery = true)
     List<Map<String, Object>> getCTDonNhapSachTheoIdDon(@Param("id") int id);
+    @Query(value = "{call SP_LAY_CTDONNHAPSACH_IDDON(:id)}", nativeQuery = true)
+    List<Map<String, Object>> layCTDonNhapSachTheoIdDon(@Param("id") int id);
 //
 
 
 //    @Query(value = "{call SP_LAY_ALL_NXB()}", nativeQuery = true)
 //    List<NhaXuatBan> layAllNXB();
 
-    @Query(value = "SELECT IDDONNHAPSACH FROM DONNHAPSACH WHERE MANHAXUATBAN =:maNXB AND NGAYDAT =:ngayDat", nativeQuery = true)
+    @Query(value = "SELECT MAX(IDDONNHAPSACH) FROM DONNHAPSACH WHERE MANHAXUATBAN =:maNXB AND NGAYDAT =:ngayDat", nativeQuery = true)
     int layIDDonNhapSach(@Param("maNXB") String maNXB,
                          @Param("ngayDat") String ngayDat);
 

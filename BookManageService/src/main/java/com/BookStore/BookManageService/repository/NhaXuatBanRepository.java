@@ -6,6 +6,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Map;
+
 public interface NhaXuatBanRepository extends JpaRepository<NhaXuatBan, String> {
     @Procedure(procedureName = "SP_THEM_NHA_XUAT_BAN")
     void themNhaXuatBan(
@@ -27,4 +30,7 @@ public interface NhaXuatBanRepository extends JpaRepository<NhaXuatBan, String> 
 
     @Query(value = "{call SP_LAY_SL_SACH_CUA_NXB(:manxb)}",nativeQuery = true)
     int laySLSachCuaNXB(@Param("manxb") String maNXB);
+
+    @Query(value = "{call SP_LAY_DS_NXB_QT()}",nativeQuery = true)
+    List<Map<String, Object>> layDSNXB();
 }

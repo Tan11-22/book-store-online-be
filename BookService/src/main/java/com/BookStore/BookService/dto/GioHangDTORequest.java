@@ -18,4 +18,6 @@ public class GioHangDTORequest {
     private String diaChi;
     private Integer hinhThucThanhToan;
     private String tenDangNhap;
+    private Integer phiVanChuyen;
+    private String soDienThoai;
 }

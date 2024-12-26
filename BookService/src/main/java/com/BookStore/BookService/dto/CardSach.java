@@ -16,4 +16,5 @@ public class CardSach {
     private Integer giaBan;
     private Integer giaGiam;
     private String tenAnh;
+    private Integer soLuong;
 }

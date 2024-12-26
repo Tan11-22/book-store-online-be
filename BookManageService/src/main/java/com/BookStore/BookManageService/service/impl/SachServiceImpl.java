@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +53,10 @@ public class SachServiceImpl implements SachService {
             sachRepository.themSach(isbn,tenSach,khuonKho,soTrang,trongLuong,moTa,nxb);
             chipTGs.stream().forEach(map -> insertST(map,isbn));
             chipTLs.stream().forEach(map->insertTLS(map,isbn));
+            int maxId = sachRepository.layIdAnhLN();
             for(int i=0;i< files.size();i++) {
-                String fileName = isbn+"a"+String.valueOf(i+1)+".png";
+                int code = maxId + i + 1;
+                String fileName = isbn+"a"+String.valueOf(code)+".png";
                 fileService.saveFile(files.get(i),0,fileName);
                 sachRepository.themHinhAnh(isbn,fileName);
             }
@@ -72,6 +75,108 @@ public class SachServiceImpl implements SachService {
                     .build();
         }
 
+    }
+
+    @Override
+    @Transactional
+    public BookStoreResponse<String> capNhatSach(String isbn, String tenSach, Integer soTrang, String khuonKho, Integer trongLuong, String moTa, String nxb,
+                                                 List<String> tacGias, List<String> theLoais, List<String> anhXoa, List<MultipartFile> anhMoi) {
+        try {
+            if(tenSach != null) {
+                sachRepository.capNhatSach(isbn,tenSach,khuonKho,soTrang,trongLuong,moTa,nxb);
+            }
+            if(tacGias != null) {
+                sachRepository.xoaSangTac(isbn);
+                tacGias.stream().forEach(map -> insertST(map,isbn));
+            }
+            if(theLoais != null) {
+                sachRepository.xoaTheLoaiSach(isbn);
+                theLoais.stream().forEach(map->insertTLS(map,isbn));
+            }
+            if(anhMoi != null) {
+                int maxId = sachRepository.layIdAnhLN();
+                System.out.println(maxId);
+                for(int i=0;i< anhMoi.size();i++) {
+                    int code = maxId + i + 1;
+                    String fileName = isbn+"a"+String.valueOf(code)+".png";
+                    System.out.println(fileName);
+                    fileService.saveFile(anhMoi.get(i),0,fileName);
+                    sachRepository.themHinhAnh(isbn,fileName);
+                }
+            }
+            if (anhXoa != null) {
+                anhXoa.forEach(map-> {
+                    try {
+                        xoaAnh(map);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
+
+
+            return BookStoreResponse.<String>builder()
+                    .code(200)
+                    .status("Cập nhật sách thành công!")
+                    .data("")
+                    .build();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            System.out.println("ERROR-62: Cap nhat sach vao gio hang--- " + e.getMessage());
+            return BookStoreResponse.<String>builder()
+                    .code(202)
+                    .status("Đã có lỗi xảy ra!")
+                    .data("")
+                    .build();
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public BookStoreResponse xoaSach(String isbn) {
+        if(sachRepository.kiemTraXoaSach(isbn) == 1)
+            return BookStoreResponse.<String>builder()
+                    .code(201)
+                    .status("Sách đã được nhập về bán không thể xoá!")
+                    .data("")
+                    .build();
+        try {
+            List<HinhAnh> hinhAnhs = sachRepository.layDSHAQT(isbn).stream().map(map->mapDataToHA(map)).toList();
+            System.out.println(isbn);
+            hinhAnhs.forEach(map-> {
+                try {
+                    sachRepository.xoaHinhAnh(map.getIdAnh());
+                    fileService.deleteFile(0,map.getFilename());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            sachRepository.xoaChiTietGiaSach(isbn);
+            sachRepository.xoaTheLoaiSach(isbn);
+            sachRepository.xoaSangTac(isbn);
+            sachRepository.xoaSach(isbn);
+            return BookStoreResponse.<String>builder()
+                    .code(200)
+                    .status("Xoá sách thành công!")
+                    .data("")
+                    .build();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            System.out.println("ERROR-62: Cap nhat sach vao gio hang--- " + e.getMessage());
+            return BookStoreResponse.<String>builder()
+                    .code(202)
+                    .status("Đã có lỗi xảy ra!")
+                    .data("")
+                    .build();
+        }
+    }
+
+    private void xoaAnh(String data) throws IOException {
+        Integer idAnh = Integer.parseInt(data.split("-")[0].trim().toString());
+        String fileName = data.split("-")[1].trim().toString();
+        sachRepository.xoaHinhAnh(idAnh);
+        fileService.deleteFile(0,fileName);
     }
 
     private void insertTLS(String data, String isbn) {
@@ -155,7 +260,35 @@ public class SachServiceImpl implements SachService {
                 .data(doanhThuDTOS).build();
     }
 
+    @Override
+    public BookStoreResponse<List<SachBanChayDTO>> layTop10SachBanChay(int thang, int nam) {
+        List<Map<String, Object>> data = sachRepository.layTop10SachBanChay(thang,nam);
+        List<SachBanChayDTO> result = data.stream().map(map -> mapDataToSachTopDTO(map)).toList();
+        return BookStoreResponse.<List<SachBanChayDTO>>builder()
+                .code(200)
+                .status("Lấy top 10 sách bán chạy thành công!")
+                .data(result).build();
+    }
 
+    private SachBanChayDTO mapDataToSachTopDTO(Map<String, Object> data) {
+        List<TacGia> tacGias = sachRepository.layDSTGQT((String) data.get("ISBN")).stream().map(map->mapDataToTG(map)).toList();
+        List<TheLoai> theLoais = sachRepository.layDSTLQT((String) data.get("ISBN")).stream().map(map->mapDataToTL(map)).toList();
+        return SachBanChayDTO.builder()
+                .isbn((String) data.get("ISBN"))
+                .tenSach((String) data.get("TENSACH"))
+                .khuonKho((String) data.get("KHUONKHO"))
+                .soTrang((Integer) data.get("SOTRANG"))
+                .trongLuong((Integer) data.get("TRONGLUONG"))
+                .moTa((String) data.get("MOTA"))
+                .soLuongCon((Integer) data.get("SOLUONG"))
+                .soLuongBan((Long) data.get("TONGSO"))
+                .thanhTien((Long) data.get("THANHTIEN"))
+                .maNhaXuatBan((String) data.get("MANHAXUATBAN"))
+                .tenNhaXuatBan((String) data.get("TENNHAXUATBAN"))
+                .tacGias(tacGias)
+                .theLoais(theLoais)
+                .build();
+    }
 
 
     private SachDTO mapDataToDTO(Map<String, Object> data) {
@@ -170,6 +303,8 @@ public class SachServiceImpl implements SachService {
                 .trongLuong((Integer) data.get("TRONGLUONG"))
                 .moTa((String) data.get("MOTA"))
                 .soLuong((Integer) data.get("SOLUONG"))
+                .soLuongNhap((Integer) data.get("SLNHAP"))
+                .soLuongBan((Integer) data.get("SLBAN"))
                 .maNhaXuatBan((String) data.get("MANHAXUATBAN"))
                 .tenNhaXuatBan((String) data.get("TENNHAXUATBAN"))
                 .tacGias(tacGias)
@@ -177,6 +312,8 @@ public class SachServiceImpl implements SachService {
                 .theLoais(theLoais)
                 .build();
     }
+
+
 
     private TacGia mapDataToTG(Map<String, Object> data) {
         return TacGia.builder()
@@ -208,4 +345,5 @@ public class SachServiceImpl implements SachService {
                 .filename((String) data.get("FILENAME"))
                 .build();
     }
+
 }

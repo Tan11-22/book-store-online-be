@@ -54,4 +54,24 @@ public class FileService {
             return null;
         }
     }
+
+
+    public void deleteFile(int type, String fileName) throws IOException {
+        String imageDir = (type == 0) ? imagesSachDir : imagesUserDir;
+
+        // Tạo đường dẫn tương đối từ thư mục gốc của project
+        Path directoryPath = Paths.get(imageDir).toAbsolutePath().normalize();
+
+        // Xác định đường dẫn file
+        Path filePath = directoryPath.resolve(fileName).normalize();
+
+        // Kiểm tra file có tồn tại không
+        if (Files.exists(filePath)) {
+            // Xóa file
+            Files.delete(filePath);
+            System.out.println("File đã được xóa: " + filePath);
+        } else {
+            System.out.println("File không tồn tại: " + filePath);
+        }
+    }
 }

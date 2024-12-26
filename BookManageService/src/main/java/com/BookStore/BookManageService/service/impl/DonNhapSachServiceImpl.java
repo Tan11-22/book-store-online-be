@@ -31,8 +31,8 @@ public class DonNhapSachServiceImpl implements DonNhapSachService {
     private CTDonNhapSachRepository ctDonNhapSachRepository;
 
     @Override
-    public BookStoreResponse<List<DonNhapSachDTO>> layALLDonNhapSach() {
-        List<Map<String, Object>> data = donNhapSachRepository.layAllDonNhapSach();
+    public BookStoreResponse<List<DonNhapSachDTO>> layALLDonNhapSach(String keyword) {
+        List<Map<String, Object>> data = keyword.equals("")? donNhapSachRepository.layAllDonNhapSach():donNhapSachRepository.layAllDNSTK(keyword);
         List<DonNhapSachDTO> result = data.stream().map(map->mapDNStoDTO(map)).toList();
         for (DonNhapSachDTO x : result) {
             System.out.println(x.toString());
@@ -86,7 +86,7 @@ public class DonNhapSachServiceImpl implements DonNhapSachService {
         System.out.println("ERROR-62: Cap nhat sach vao gio hang--- " + e.getMessage());
         return BookStoreResponse.<Boolean>builder()
                 .code(201)
-                .status("Đã có lỗi xảy ra!")
+                .status("Đã có lỗi xảy ra!" +e.getMessage())
                 .data(false)
                 .build();
         }
@@ -136,6 +136,19 @@ public class DonNhapSachServiceImpl implements DonNhapSachService {
                 .data(result).build();
     }
 
+    @Override
+    public BookStoreResponse<DonNhapSachResponseDTO> layChiTietDonTheoID(int id) {
+        Map<String, Object> data = donNhapSachRepository.getDonNhapSachTheoId(id);
+        DonNhapSachDTO don = mapDNStoDTO(data);
+        List<Map<String, Object>> dataSach = donNhapSachRepository.layCTDonNhapSachTheoIdDon(id);
+        List<SachDNDTO> sachs = dataSach.stream().map(map->mapSachtoDTO(map)).toList();
+        DonNhapSachResponseDTO result = DonNhapSachResponseDTO.builder().donNhapSachDTO(don).sachs(sachs).build();
+        return BookStoreResponse.<DonNhapSachResponseDTO>builder()
+                .code(200)
+                .status("Lấy chi tiết đơn nhập thành công!")
+                .data(result).build();
+    }
+
     private SachDNDTO mapSachtoDTO(Map<String, Object> data) {
         int soLuong = data.get("SOLUONG")!=null ? (Integer) data.get("SOLUONG") : 1;
         return SachDNDTO.builder()
@@ -144,6 +157,7 @@ public class DonNhapSachServiceImpl implements DonNhapSachService {
                 .giaNhap((Integer) data.get("GIANHAP"))
                 .tenAnh((String) data.get("TENANH"))
                 .soLuong(soLuong)
+                .soLuongNhap(soLuong)
                 .build();
     }
 
@@ -156,6 +170,7 @@ public class DonNhapSachServiceImpl implements DonNhapSachService {
                 .ngayDat((Date) data.get("NGAYDAT"))
                 .tenNhaXuatBan((String) data.get("TENNHAXUATBAN"))
                 .daNhap((Integer) data.get("DANHAP"))
+                .phaiNhap((Integer) data.get("PHAINHAP"))
                 .build();
     }
 

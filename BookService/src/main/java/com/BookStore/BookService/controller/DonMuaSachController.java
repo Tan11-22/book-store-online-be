@@ -2,7 +2,9 @@ package com.BookStore.BookService.controller;
 
 import com.BookStore.BookService.dto.BookStoreResponse;
 import com.BookStore.BookService.dto.DonMuaSachDTO;
+
 import com.BookStore.BookService.service.DonMuaSachService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,12 @@ public class DonMuaSachController {
 
     @PostMapping("cap-nhat-don-mua")
     public  BookStoreResponse capNhatDonMua(@RequestBody Map<String, Object> data) {
-        System.out.println(data);
+//        System.out.println(data);
         return donMuaSachService.updateTrangThaiDonMuaSauThanhToan((String) data.get("tdn"), (Integer) data.get("trangThai"));
+    }
+
+    @PostMapping("huy-don-mua")
+    public  BookStoreResponse huyDonMua(@RequestBody Map<String, Object> data) {
+        return donMuaSachService.huyDonMuaSach(data);
     }
 }

@@ -12,4 +12,5 @@ import lombok.NoArgsConstructor;
 public class PaymentRequest {
     private String tenDangNhap;
     private long amount;
+    private String hoTen;
 }

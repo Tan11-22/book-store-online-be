@@ -6,9 +6,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Map;
+
 public interface TheLoaiRepository extends JpaRepository<TheLoai, Integer> {
     @Query(value = "{call SP_LAY_SO_LUONG_SACH_CUA_THE_LOAI(:id)}", nativeQuery = true)
     int laySoLuongSach(@Param("id") int id);
+
+    @Query(value = "{call  SP_LAY_DS_THE_LOAI()}", nativeQuery = true)
+    List<Map<String, Object>> layDSTheLoai();
 
     @Procedure(procedureName = "SP_XOA_THE_LOAI")
     void xoaTheLoai(@Param("id") int id);

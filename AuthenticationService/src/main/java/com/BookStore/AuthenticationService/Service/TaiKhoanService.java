@@ -1,9 +1,10 @@
 package com.BookStore.AuthenticationService.Service;
 
 import com.BookStore.AuthenticationService.dto.BookStoreResponse;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.BookStore.AuthenticationService.dto.UserInfoDTO;
 
 import java.util.Date;
+import java.util.Map;
 
 public interface TaiKhoanService {
     BookStoreResponse<Boolean> dangKyTaiKhoan(String tenDangNhap,
@@ -15,7 +16,17 @@ public interface TaiKhoanService {
                                               String diaChi,
                                               Date ngaySinh,
                                               String soDienThoai);
-    String lauQuyenCuaUser(String tenDangNhap);
+
+
     BookStoreResponse<Boolean> thayDoiMatKhau(String username, String password, String newpassword);
+
     BookStoreResponse quenMatKhau(String email, String username);
+
+    UserInfoDTO layThongTinUser(String tenDangNhap, String token);
+
+    BookStoreResponse getDanhSachTaiKhoan(int type);
+
+    BookStoreResponse capNhatTrangThaiTK(String tenDangNhap, Boolean tt);
+
+    BookStoreResponse<Boolean> taoTaiKhoanNV(Map<String, Object> data);
 }

@@ -24,7 +24,7 @@ public class GioHangController {
     private DonMuaSachService donMuaSachService;
     // Xem chi tiết
     @GetMapping("chi-tiet-gio-hang")
-    public BookStoreResponse<List<GioHangDTO>> xemChiTietGioHang(@RequestParam("tendangnhap") String ten) {
+    public BookStoreResponse<Map<String, Object>> xemChiTietGioHang(@RequestParam("tendangnhap") String ten) {
         return gioHangService.layChiTietGioHang(ten);
     }
 

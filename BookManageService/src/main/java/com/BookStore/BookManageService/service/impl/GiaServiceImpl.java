@@ -51,11 +51,41 @@ public class GiaServiceImpl implements GiaService {
     @Override
     @Transactional
     public BookStoreResponse<Boolean> themGiaMoi(CTGiaSach data) {
+        System.out.println(data);
+        int kiemTraTonTai = giaRepository.kiemTraTonTaiGiaSach(data.getIdGia(), data.getNgayApDung(), data.getNgayKetThuc(), data.getIsbn());
+        if(kiemTraTonTai > 0) {
+            return BookStoreResponse.<Boolean>builder()
+                    .code(201)
+                    .status("Đã tồn tại loại giá được áp dụng từ " + data.getNgayApDung()+" đến "+ data.getNgayKetThuc()+"!")
+                    .data(false)
+                    .build();
+        }
         try {
             ctGiaSachRepository.save(data);
             return BookStoreResponse.<Boolean>builder()
                     .code(200)
-                    .status("Thêm giá mơ thành công!")
+                    .status("Thêm giá mới thành công!")
+                    .data(true)
+                    .build();
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            System.out.println("ERROR-62: Huỷ đơn nhập--- " + e.getMessage());
+            return BookStoreResponse.<Boolean>builder()
+                    .code(202)
+                    .status("Đã có lỗi xảy ra!")
+                    .data(false)
+                    .build();
+        }
+    }
+
+    @Override
+    @Transactional
+    public BookStoreResponse<Boolean> capNhatGia(CTGiaSach data) {
+        try {
+            ctGiaSachRepository.capNhatGiaSach(data.getIdCTGiaSach(),data.getGia(),data.getNgayApDung(), data.getNgayKetThuc());
+            return BookStoreResponse.<Boolean>builder()
+                    .code(200)
+                    .status("Cập nhật giá thành công!")
                     .data(true)
                     .build();
         } catch (Exception e) {

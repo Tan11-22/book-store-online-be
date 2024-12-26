@@ -14,6 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CTPNDTO {
-    private PhieuNhap phieuNhap;
+    private PhieuNhapDTO phieuNhap;
     private List<SachDNDTO> sachs;
 }

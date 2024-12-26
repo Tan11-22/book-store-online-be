@@ -19,6 +19,36 @@ public interface SachRepository extends JpaRepository<Sach, String> {
                   @Param("mota") String moTa, // allow null
                   @Param("manxb") String maNXB);
 
+    @Procedure(procedureName = "SP_CAP_NHAT_SACH")
+    void capNhatSach(@Param("isbn") String isbn,
+                  @Param("tensach") String tenSach,
+                  @Param("khuonkho") String khuonKho, // có thể gán == null
+                  @Param("sotrang") Integer soTrang,
+                  @Param("trongluong") Integer trongLuong,
+                  @Param("mota") String moTa, // allow null
+                  @Param("manxb") String maNXB);
+
+    @Procedure(procedureName = "SP_XOA_SANG_TAC")
+    void xoaSangTac(@Param("isbn") String isbn);
+
+    @Procedure(procedureName = "SP_XOA_THE_LOAI_SACH")
+    void xoaTheLoaiSach(@Param("isbn") String isbn);
+
+    @Procedure(procedureName = "SP_XOA_HINH_ANH")
+    void xoaHinhAnh(@Param("idAnh") int idAnh);
+
+    @Procedure(procedureName = "SP_XOA_CT_GIA")
+    void xoaChiTietGiaSach(@Param("isbn") String isbn);
+
+    @Procedure(procedureName = "SP_XOA_SACH")
+    void xoaSach(@Param("isbn") String isbn);
+
+    @Query(value = "SELECT MAX(IDANH) FROM HINHANH", nativeQuery = true)
+    int layIdAnhLN();
+
+    @Query(value = "{call SP_KIEM_TRA_XOA_SACH(:isbn)}", nativeQuery = true)
+    int kiemTraXoaSach(@Param("isbn") String isbn);
+
     @Procedure(procedureName = "SP_THEM_SANG_TAC")
     void themSangTac(@Param("isbn") String isbn,
                   @Param("idTacGia") Integer idTacGia);
@@ -58,6 +88,9 @@ public interface SachRepository extends JpaRepository<Sach, String> {
 
     @Query(value = "{call GetMonthlyRevenue(:year)}", nativeQuery = true)
     List<Map<String, Object>> thongKeDoanhThuNam(@Param("year") int year);
+
+    @Query(value = "{call SP_TK_SACH_BAN_CHAY_TRONG_THANG(:thang,:nam)}", nativeQuery = true)
+    List<Map<String, Object>> layTop10SachBanChay(@Param("thang") int thang, @Param("nam") int nam);
 
 
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/quan-ly-sach-service/sach/")
@@ -38,7 +39,7 @@ public class SachController {
     }
 
     @PostMapping("/them-sach")
-    public BookStoreResponse<String> handleFileUpload(
+    public BookStoreResponse<String> handleThemSach(
             @RequestParam("isbn") String isbn,
             @RequestParam("tenSach") String tenSach,
             @RequestParam("soTrang") Integer soTrang,
@@ -51,15 +52,15 @@ public class SachController {
             @RequestParam("files") List<MultipartFile> files
     ) {
         // Xử lý các trường dữ liệu
-        System.out.println("ISBN: " + isbn);
-        System.out.println("Tên sách: " + tenSach);
-        System.out.println("Số trang: " + soTrang);
-        System.out.println("Số trang: " + khuonKho);
-        System.out.println("Số trang: " + trongLuong);
-        System.out.println("Số trang: " + moTa);
-        System.out.println("Nhà xuất bản: " + nxb);
-        System.out.println("Tác giả: " + chipTGs);
-        System.out.println("Thể loại: " + chipTLs);
+//        System.out.println("ISBN: " + isbn);
+//        System.out.println("Tên sách: " + tenSach);
+//        System.out.println("Số trang: " + soTrang);
+//        System.out.println("Số trang: " + khuonKho);
+//        System.out.println("Số trang: " + trongLuong);
+//        System.out.println("Số trang: " + moTa);
+//        System.out.println("Nhà xuất bản: " + nxb);
+//        System.out.println("Tác giả: " + chipTGs);
+//        System.out.println("Thể loại: " + chipTLs);
 
         // Xử lý các tệp tin
         for (MultipartFile file : files) {
@@ -70,8 +71,37 @@ public class SachController {
         return sachService.themSachMoi(isbn,tenSach,soTrang,khuonKho,trongLuong,moTa,nxb,chipTGs,chipTLs,files);
     }
 
+    @PostMapping("cap-nhat-sach")
+    public BookStoreResponse capNhatSach(
+            @RequestParam("isbn") String isbn,
+            @RequestParam(value = "tenSach", required = false) String tenSach,
+            @RequestParam(value = "soTrang", required = false) Integer soTrang,
+            @RequestParam(value = "khuonKho", required = false) String khuonKho,
+            @RequestParam(value = "trongLuong", required = false) Integer trongLuong,
+            @RequestParam(value = "moTa", required = false) String moTa,
+            @RequestParam(value = "nxb", required = false) String nxb,
+            @RequestParam(value = "tacGias", required = false) List<String> tacGias,
+            @RequestParam(value = "theLoais", required = false) List<String> theLoais,
+            @RequestParam(value = "anhXoa", required = false) List<String> anhXoa,
+            @RequestParam(value = "anhMoi", required = false) List<MultipartFile> anhMoi
+    ) {
+
+        return sachService.capNhatSach(isbn,tenSach,soTrang,khuonKho,trongLuong,moTa,nxb,tacGias,theLoais,anhXoa,anhMoi);
+    }
+
+    @PostMapping("xoa-sach")
+    public BookStoreResponse<String> handleXoaSach(@RequestBody Map<String, String> data) {
+        return sachService.xoaSach(data.get("isbn"));
+    }
+
     @GetMapping("doanh-thu")
     public BookStoreResponse getDoanhThuNam(@RequestParam("year") int year) {
         return sachService.thongKeDoanhThuNam(year);
+    }
+
+    @GetMapping("top-10-ban-chay")
+    public BookStoreResponse getDoanhThuNam(@RequestParam("thang") int thang,
+                                            @RequestParam("nam") int nam) {
+        return sachService.layTop10SachBanChay(thang, nam);
     }
 }

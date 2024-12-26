@@ -26,5 +26,5 @@ public class ChiTietSachDTO {
 
     private List<HinhAnh> hinhAnhs;
 
-    private List<BinhLuanDTO> binhLuanDTOS;
+
 }

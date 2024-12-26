@@ -1,12 +1,9 @@
 package com.BookStore.BookService.repository;
 
-import com.BookStore.BookService.dto.BinhLuanDTO;
-import com.BookStore.BookService.dto.SachDTO;
-import com.BookStore.BookService.model.HinhAnh;
+
 import com.BookStore.BookService.model.Sach;
 
-import com.BookStore.BookService.model.TacGia;
-import com.BookStore.BookService.model.TheLoai;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,10 +39,17 @@ public interface SachRepository extends JpaRepository<Sach, String> {
 
     @Query(value = "{call SP_LAY_DS_THE_LOAI_SACH(:isbn)}", nativeQuery = true)
     List<Map<String,Object>> layDanhSachTheLoaiSach(@Param("isbn") String isbn);
+//
 
-    @Query(value = "{call SP_LAY_DS_BINH_LUAN_CUA_SACH(:isbn)}", nativeQuery = true)
-    List<Map<String, Object>> layDanhSachBinhLuanCuaSach(@Param("isbn") String isbn);
+    @Query(value = "{call SP_LAY_TC_TG()}", nativeQuery = true)
+    List<Map<String, Object>> layTCTG();
 
+    @Query(value = "{call SP_LAY_TC_TL()}", nativeQuery = true)
+    List<Map<String, Object>> layTCTL();
+
+
+    @Query(value = "SELECT IDTHELOAI FROM THELOAISACH WHERE ISBN = :isbn", nativeQuery = true)
+    List<Integer> getIdTheLoaiTT(@Param("isbn") String isbn);
 
 
 }

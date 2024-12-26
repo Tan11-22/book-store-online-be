@@ -11,4 +11,5 @@ public interface GiaService {
     BookStoreResponse<List<GiaDTO>> getSachVaGia(String search);
     BookStoreResponse<List<CTGiaDTO>> getCTGiaSach(String isbn);
     BookStoreResponse<Boolean> themGiaMoi(CTGiaSach data);
+    BookStoreResponse<Boolean> capNhatGia(CTGiaSach data);
 }

@@ -14,7 +14,9 @@ public interface DonMuaSachRepository extends JpaRepository<DonMuaSach, Integer>
     void themDonMuaSach(
             @Param("tenDangNhap") String tenDangNhap,
             @Param("trangthai") Integer trangThai,
-            @Param("diachigiao") String diaChiGiao
+            @Param("diachigiao") String diaChiGiao,
+            @Param("phi") Integer phi,
+            @Param("sdt") String sdt
     );
 
     @Procedure(procedureName = "SP_THEM_SACH_VAO_CT_DON_MUA")
@@ -72,4 +74,8 @@ public interface DonMuaSachRepository extends JpaRepository<DonMuaSach, Integer>
     void xoaSachTrongGioHang(
             @Param("tdn") String tenDangNhap,
             @Param("isbn") String isbn);
+
+    @Procedure(procedureName = "SP_UPDATE_HUY_DH_DMS")
+    void updateHuyDonMua(
+            @Param("idDonMua") int idDon);
 }

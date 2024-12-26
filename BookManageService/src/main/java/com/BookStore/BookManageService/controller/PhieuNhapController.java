@@ -26,4 +26,9 @@ public class PhieuNhapController {
     public BookStoreResponse getCtPhieuNhap(@RequestParam("spn") int soPhieuNhap) {
         return phieuNhapService.getCTPN(soPhieuNhap);
     }
+
+    @GetMapping("ctpn-theo-don")
+    public BookStoreResponse getCtPhieuNhapTheoDon(@RequestParam("idDon") int idDon) {
+        return phieuNhapService.getCTPNTheoDonNhap(idDon);
+    }
 }

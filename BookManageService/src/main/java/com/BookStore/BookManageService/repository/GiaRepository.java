@@ -15,4 +15,12 @@ public interface GiaRepository extends JpaRepository<Gia, Integer> {
 
     @Query(value = "{call SP_GET_LS_GIA_SACH(:isbn)}",nativeQuery = true)
     List<Map<String, Object>> getCTGiaSach(@Param("isbn") String isbn);
+
+    @Query(value = "{call SP_KIEM_TRA_CTGIA(:idGia,:ngayBatDau,:ngayKetThuc, :isbn)}",nativeQuery = true)
+    int kiemTraTonTaiGiaSach(
+            @Param("idGia") int idGia,
+            @Param("ngayBatDau") String ngayBatDau,
+            @Param("ngayKetThuc") String ngayKetThuc,
+            @Param("isbn") String isbn
+    );
 }
