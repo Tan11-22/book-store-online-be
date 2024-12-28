@@ -24,7 +24,7 @@ public class BinhLuanDTO {
 
     private Integer diem;
 
-    private Date ngay;
+    private String ngay;
 
     private String hoTen;
 

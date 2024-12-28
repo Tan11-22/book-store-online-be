@@ -1,6 +1,8 @@
 package com.BookStore.BookManageService.service.impl;
 
 import com.BookStore.BookManageService.dto.BookStoreResponse;
+import com.BookStore.BookManageService.dto.TacGiaDTO;
+import com.BookStore.BookManageService.dto.TheLoaiDTO;
 import com.BookStore.BookManageService.repository.TheLoaiRepository;
 import com.BookStore.BookManageService.service.TheLoaiService;
 
@@ -8,6 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TheLoaiServiceImpl implements TheLoaiService {
@@ -89,5 +95,25 @@ public class TheLoaiServiceImpl implements TheLoaiService {
                     .data(false)
                     .build();
         }
+    }
+
+    @Override
+    public BookStoreResponse<List<TheLoaiDTO>> layDSTheLoai() {
+        List<Map<String, Object>> data = theLoaiRepository.layDSTheLoai();
+        return BookStoreResponse.<List<TheLoaiDTO>>builder()
+                .code(200)
+                .status("Lấy danh sách thể loại thành công")
+                .data(
+                        data.stream().map(
+                                map->mapTheLoaiToDTO(map)).collect(Collectors.toList()))
+                .build();
+    }
+
+    private TheLoaiDTO mapTheLoaiToDTO(Map<String, Object> data) {
+        return TheLoaiDTO.builder()
+                .id((Integer) data.get("IDTHELOAI"))
+                .tenTheLoai((String) data.get("TENTHELOAI"))
+                .soLuongSach((Integer) data.get("SOLUONGSACH"))
+                .build();
     }
 }

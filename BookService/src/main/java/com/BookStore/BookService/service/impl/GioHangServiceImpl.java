@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import javax.management.ObjectName;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,21 +20,28 @@ public class GioHangServiceImpl implements GioHangService {
     private GioHangRepository gioHangRepository;
 
     @Override
-    public BookStoreResponse<List<GioHangDTO>> layChiTietGioHang(String tenDangNhap) {
+    public BookStoreResponse<Map<String, Object>> layChiTietGioHang(String tenDangNhap) {
         List<Map<String, Object>> data = gioHangRepository.layChiTietGioHang(tenDangNhap);
         List<GioHangDTO> result = data.stream().map(map -> mapGHToDTO(map)).toList();
-        return BookStoreResponse.<List<GioHangDTO>>builder()
+        String sdt = gioHangRepository.getSoDienThoai(tenDangNhap);
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("sachs", result);
+        dataMap.put("sdt", sdt);
+        return BookStoreResponse.<Map<String, Object>>builder()
                 .code(200)
                 .status("Lấy chi tiết giỏ hàng thành công!")
-                .data(result)
+                .data(dataMap)
                 .build();
     }
 
     @Override
     @Transactional
-    public BookStoreResponse<Boolean> themSachVaoGioHang(String ten, String isbn, int soLuong) {
-        Integer id = layIdGioHang(ten, isbn);
-        if(id != null) return capNhatSachTrongGioHang(id, soLuong);
+    public BookStoreResponse<Boolean>   themSachVaoGioHang(String ten, String isbn, int soLuong) {
+        Map<String, Object> dataGH = gioHangRepository.layIdGioHang(ten,isbn);
+        Integer id = (Integer) dataGH.get("IDGIOHANG");
+        System.out.println(id);
+//        System.out.println()
+        if(id != null) return capNhatSachTrongGioHang(id, soLuong + (Integer) dataGH.get("SOLUONG"));
         try {
             gioHangRepository.themSachVaoGioHang(ten, isbn, soLuong);
             return BookStoreResponse.<Boolean>builder()
@@ -93,19 +102,30 @@ public class GioHangServiceImpl implements GioHangService {
         }
     }
 
+
+
     @Override
-    public Integer layIdGioHang(String ten, String isbn) {
-        return gioHangRepository.layIdGioHang(ten, isbn);
+    public BookStoreResponse<Integer> laySLSachTrongGH(String tenDangNhap) {
+        Integer result = gioHangRepository.laySLSachTrongGH(tenDangNhap);
+        return BookStoreResponse.<Integer>builder()
+                .code(200)
+                .status("Lấy số lượng sách trong giỏ hàng thành công!")
+                .data(result)
+                .build();
     }
 
     private GioHangDTO mapGHToDTO(Map<String, Object> data) {
         return GioHangDTO.builder()
                 .idGioHang((Integer) data.get("IDGIOHANG"))
+                .isbn((String) data.get("ISBN"))
                 .tenSach((String) data.get("TENSACH"))
                 .soLuong((Integer) data.get("SOLUONG"))
                 .giaBan((Integer) data.get("GIABAN"))
-                .giaGiam((Integer) data.get("GIAGAM"))
+                .giaGiam((Integer) data.get("GIAGIAM"))
                 .anh((String) data.get("TENANH"))
+                .soTrang((Integer) data.get("SOTRANG"))
+                .trongLuong((Integer) data.get("TRONGLUONG"))
+                .selected(false)
                 .build();
     }
 }
